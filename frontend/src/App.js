@@ -1,11 +1,17 @@
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import ErrorPage from './pages/ErrorPage';
+const router = createBrowserRouter([
+  {
+    path:'/',
+    errorElement:<ErrorPage />,
+    element:<HomePage />
+  }
+]);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-       tcfvg
-      </header>
-    </div>
+  <RouterProvider router={router} />
   );
 }
 
