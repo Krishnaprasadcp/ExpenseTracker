@@ -20,7 +20,16 @@ const UserSchema = new Schema({
     password:{
         type:String,
         required:true
-    }
+    },
+    phoneNumber:{
+        type:Number,
+        required:true
+    },
+    date:{
+        type:Date,
+        default:Date.now
+    },
+  
 });
 
 const UserModal = mongoose.model("UserData",UserSchema);
