@@ -8,6 +8,10 @@ const ErrorPage = () => {
     title = "Not found!";
     message = "Could not find resource or page.";
   }
+  if(error.status === 500){
+    message = error.message;
+    title = "Refresh the page";
+  }
 
   return (
     <div>

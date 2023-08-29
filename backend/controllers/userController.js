@@ -42,10 +42,12 @@ const postLoginUser = async(req,res)=>{
   if(user &&(await bcrypt.compare(password,user.password))){
     const token = generateToken(user._id);
     const expenseData =await expenseModal.find({user:user._id});
-
-    res.status(201).json({
-      expenseData,
-      user
+    console.log("succesfully logined");
+    res.status(200).json({
+      expenseData:expenseData,
+      user:user,
+      token:token
+      
     });
   }
   else{
