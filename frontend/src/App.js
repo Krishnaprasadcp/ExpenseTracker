@@ -7,11 +7,14 @@ import {
 import { useDispatch } from "react-redux";
 import HomePage from "./pages/HomePage";
 import ErrorPage from "./pages/ErrorPage";
-import RootPage from "./pages/RootPage";
+import RootPage from "./pages/RootPages/RootPage";
 import LoginPage from "./pages/LoginPage";
 import Signup from "./pages/SignupPage";
-import { userExpenseActions } from "./store/user-expenseSlice";
-
+import { userLoginAction } from "./store/userSlice";
+import HomepageRoot from "./pages/RootPages/HomepageRoot";
+// import TestPage from "./pages/TestPage";
+import ProtectedRoute from "./components/AuthChecker";
+import MyProfile from "./pages/MyProfile";
 function App() {
   const dispatch = useDispatch();
 
@@ -38,24 +41,33 @@ function App() {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify(loginData),
+              credentials:'include'
             });
             const returnedData = await response.json();
-            console.log(returnedData.user);
             if (!response.ok) {
               throw json(
                 { message: "Cant upload data to the database" },
                 { status: 500 }
               );
             } else {
-              dispatch(userExpenseActions.userData(returnedData.user));
-
+              dispatch(userLoginAction.userData(returnedData.user));
+              dispatch(userLoginAction.isLoggedin());
+              dispatch(userLoginAction.tokenData(returnedData.token));
               return redirect("/user/homepage");
             }
           },
         },
-        { path: "user/:name", element: <HomePage /> },
+        // { path: "user/:name", element: <HomePage /> },
         { path: "signup", element: <Signup /> },
-        { path: "/user/homepage", element: <HomePage /> },
+        {
+          path: "/user",
+          element: <HomepageRoot />,
+          children: [
+            {path:"homepage",element:<ProtectedRoute element={HomePage}/> },
+            {path:"userProfile",element:<MyProfile />}
+            
+          ],
+        },
       ],
     },
   ]);

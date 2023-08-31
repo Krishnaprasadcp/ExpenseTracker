@@ -1,6 +1,6 @@
 require("dotenv").config();
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
 const userModal = require("../modals/userModal");
 const expenseModal = require('../modals/expenseDataModal');
 
@@ -41,13 +41,15 @@ const postLoginUser = async(req,res)=>{
   const user = await userModal.findOne({email});
   if(user &&(await bcrypt.compare(password,user.password))){
     const token = generateToken(user._id);
-    const expenseData =await expenseModal.find({user:user._id});
-    console.log("succesfully logined");
+    res.cookie('jwt',token,{maxAge:maxAge*1000});
+    const userData={
+      firstName:user.firstName,
+      lastName:user.lastName,
+
+    }
     res.status(200).json({
-      expenseData:expenseData,
-      user:user,
-      token:token
-      
+      user:userData,
+      token:token    
     });
   }
   else{
@@ -55,13 +57,16 @@ const postLoginUser = async(req,res)=>{
   }
 
 }
+const maxAge = 3*60*60*24;
 
 const generateToken=(id)=>{
-  return jwt.sign({id},process.env.SECRET_KEY,{expiresIn:'1d'});
+  return jwt.sign({id},process.env.SECRET_KEY,{expiresIn:maxAge});
 }
+
 
 module.exports = {
   getUserData,
   postRegisterUser,
-  postLoginUser
+  postLoginUser,
+  
 };

@@ -1,7 +1,7 @@
 import {configureStore} from '@reduxjs/toolkit';
-import userExpenseSlice from './user-expenseSlice';
+import userLoginSlice from './userSlice';
 
 const store = configureStore({
-    reducer:{userExpenseData:userExpenseSlice.reducer}
+    reducer:{userLoginData:userLoginSlice.reducer}
 });
 export default store;

@@ -5,15 +5,21 @@ const {verifyToken}= require('./middleware/authMiddleware');
 const {getUserData,postRegisterUser,postLoginUser} = require('./controllers/userController');
 const {getExpense,postExpense,deleteExpense} = require('./controllers/expenseDataController');
 const app = express();
-app.use(express.json());
-app.use(cors());
+const cookieParser = require('cookie-parser');
 
+app.use(express.json());
+app.use(cors({
+    origin:'http://localhost:3001',
+    credentials:true
+}));
+app.use(cookieParser());
 mongoose.connect("mongodb://127.0.0.1:27017/expenseTracker",{
     useNewUrlParser:true,
     useUnifiedTopology:true
 }).then(()=>(console.log('Connected to DB')))
     .catch(console.error);
    
+
     //get a user data
     app.get('/user/:name',getUserData);
     //register a new user
