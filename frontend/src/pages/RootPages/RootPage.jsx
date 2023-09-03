@@ -4,8 +4,6 @@ import { useSelector } from "react-redux";
 const RootPage = () => {
   const showName = useSelector(state=>state.userLoginData.isLoggedin);
   const userInfo = useSelector((state) => state.userLoginData.userData);
-  console.log(userInfo);
-  console.log(showName);
   const [date, setTime] = useState(new Date());
   useEffect(() => {
     const interval = setInterval(() => {
@@ -27,7 +25,7 @@ const RootPage = () => {
             <div className="text-xl  mr-6 text-zinc-200">
             <h4 className="inline">Time: </h4>{date.getHours()}:{date.getMinutes()}:{date.getSeconds()}
               <div className="-mr-2">
-                <h4 className="inline">Date: </h4>{date.getDate()}-{date.getMonth()}-{date.getFullYear()}
+                <h4 className="inline">Date: </h4>{date.getDate()}-{date.getMonth()+1}-{date.getFullYear()}
               </div>
             </div>
           </div>

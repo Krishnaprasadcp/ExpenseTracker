@@ -1,3 +1,4 @@
 .wid{
     height: calc(100vh - 12vh);
+    width:calc(100vw)
 }
