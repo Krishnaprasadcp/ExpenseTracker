@@ -23,7 +23,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/expenseTracker",{
     //get a user data
     app.get('/user/:name',getUserData);
     //register a new user
-    app.post('/user/register',postRegisterUser);
+    app.post('/user/signup',postRegisterUser);
     //login a user
     app.post('/user/login',postLoginUser)
     //get the user expense

@@ -12,12 +12,15 @@ import LoginPage from "./pages/LoginPage";
 import Signup from "./pages/SignupPage";
 import { userLoginAction } from "./store/userSlice";
 import HomepageRoot from "./pages/RootPages/HomepageRoot";
-// import TestPage from "./pages/TestPage";
+import TestPage from "./pages/TestPage";
 import ProtectedRoute from "./components/AuthChecker";
 import MyProfile from "./pages/MyProfile";
+import { useSelector } from "react-redux";
 function App() {
   const dispatch = useDispatch();
-
+  const userData = useSelector(state=>state.userExpennseSignup.userLoginCred);
+  const userSignUpMonthlyExpense=useSelector(state=>state.userExpennseSignup.monthlyExpense);
+  const combinedData={userData:userData,monthlyExpenseData:userSignUpMonthlyExpense};
   const router = createBrowserRouter([
     {
       path: "/",
@@ -41,7 +44,7 @@ function App() {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify(loginData),
-              credentials:'include'
+              credentials: "include",
             });
             const returnedData = await response.json();
             if (!response.ok) {
@@ -57,15 +60,49 @@ function App() {
             }
           },
         },
-        // { path: "user/:name", element: <HomePage /> },
-        { path: "signup", element: <Signup /> },
+        { path: "user/:name", element: <HomePage /> },
+        {
+          path: "user/signup",
+          element: <Signup />,
+          action: async () => {
+            const url = "http://localhost:3000/user/signup"; 
+            const response =await fetch(url,{
+              method:'post',
+              headers:{
+                "Content-Type":"application/json"
+              },
+              body:JSON.stringify(combinedData)
+            });
+            const returnedData = await response.json();
+            if (!response.ok) {
+              throw json(
+                { message: "Cant Sign In to the database" },
+                { status: 500 }
+              );
+            }  
+            else{
+              dispatch(userLoginAction.tokenData(returnedData.token));
+              dispatch(userLoginAction.isLoggedin());
+              dispatch(userLoginAction.userData(returnedData.userInfo));
+              return redirect("/user/homepage"); 
+
+            }      
+                
+          },
+        },
+        {
+          path:"/user/testpage",
+          element:<TestPage />
+        },
         {
           path: "/user",
           element: <HomepageRoot />,
           children: [
-            {path:"homepage",element:<ProtectedRoute element={HomePage}/> },
-            {path:"userProfile",element:<MyProfile />}
-            
+            {
+              path: "homepage",
+              element: <ProtectedRoute element={HomePage} />,
+            },
+            { path: "userProfile", element: <MyProfile /> },
           ],
         },
       ],

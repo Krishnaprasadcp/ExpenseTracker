@@ -19,7 +19,7 @@ const RootPage = () => {
           <div className="text-xl flex flex-row justify-between ">
             <div className="text-zinc-200">
               {!showName && <Link className="mx-3" to="user/login">SignIn</Link>}
-              {!showName && <Link to="signup">SignUp</Link>}
+              {!showName && <Link to="user/signup">SignUp</Link>}
               {showName && <h5>Welcome:{userInfo.firstName}{userInfo.lastName}</h5> }
             </div>
             <div className="text-xl  mr-6 text-zinc-200">
