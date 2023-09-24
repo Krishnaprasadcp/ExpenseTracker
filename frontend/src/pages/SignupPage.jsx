@@ -1,11 +1,13 @@
 import pic from "../images/loginImg.jpg";
 import { Fragment } from "react";
 import classes from "./css/loginCss.module.css";
-import { Form } from "react-router-dom";
+import { Form,redirect,json } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { userSignupActions } from "../store/userSignUpSlice";
 import { useSelector } from "react-redux";
+import { userLoginAction } from "../store/userSlice";
+import store from "../store";
 const Signup = () => {
   const dispatch = useDispatch();
   const [isNextExpenseDetail, setNextExpenseDetail] = useState(false);
@@ -69,8 +71,10 @@ const [increment,setIncrement]=useState(1);
         <div>
           <img className={classes.wid} src={pic} alt="" />
         </div>
-        <div className="text  text-center border border-gray-400 m-5">
-          <div className="text-2xl mt-8">
+        <div className="allforms text  text-center border border-gray-400 m-5 flex justify-center">
+          <div className="box">
+              <div className="hii flex-col">
+              <div className="text-2xl mt-8">
             <h4>SignUp For Your Account</h4>
           </div>
           <Form method="post" className="w-full mt-8 flex flex-col gap-4">
@@ -164,7 +168,7 @@ const [increment,setIncrement]=useState(1);
 
             {isNextExpenseDetail && (
               <>
-                <div className="m-auto w-full sm:w-5/6 lg:w-3/4">
+                <div className="m-auto w-full sm:w-5/6 text text-gray-300">
                   <div className="border border-gray-400 ">
                     <h3>Add Your Monthly Expense</h3>
                     <h4 className="mt-3">
@@ -172,7 +176,7 @@ const [increment,setIncrement]=useState(1);
                     </h4>
                     <>
                    
-                        <table className="w-auto mt-3 text text-lg m-auto border-collapse border border-slate-500">
+                        <table className="w-auto mt-3 text text-lg m-auto border-collapse border border-slate-500 text text-white">
                           <thead>
                             <tr className="border border-slate-500">
                               <td className="border border-slate-500 px-2">Category</td>
@@ -217,7 +221,6 @@ const [increment,setIncrement]=useState(1);
                         </div>
                       </div>
                     )}
-                    <input type="text" />
                   </div>
                 </div>
               </>
@@ -228,6 +231,8 @@ const [increment,setIncrement]=useState(1);
               <button className={isNextExpenseDetail ? 'cursor-not-allowed':'cursor-pointer'} disabled={isNextExpenseDetail} onClick={nextClickHandler}>Next</button>
             </div>
           </Form>
+              </div>
+          </div>
         </div>
       </div>
       
@@ -235,3 +240,39 @@ const [increment,setIncrement]=useState(1);
   );
 };
 export default Signup;
+export async function action(){
+
+
+  const data = store.getState();
+  const combinedData ={
+    userData:data.userExpennseSignup.userLoginCred,
+    monthlyExpenseData:data.userExpennseSignup.monthlyExpense,
+
+  }
+
+
+    const url = "http://localhost:3000/user/signup"; 
+    const response =await fetch(url,{
+      method:'post',
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify(combinedData),
+      credentials:'include'
+    });
+    const returnedData = await response.json();
+    console.log(returnedData);
+    if (!response.ok) {
+      throw json(
+        { message: "Cant Sign In to the database" },
+        { status: 500 }
+      );
+    }  
+    else{
+      store.dispatch(userLoginAction.tokenData(returnedData.token));
+      store.dispatch(userLoginAction.isLoggedin());
+      store.dispatch(userLoginAction.userData(returnedData.userInfo));
+      return redirect("/user/homepage"); 
+
+    }      
+}

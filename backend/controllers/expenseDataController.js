@@ -9,7 +9,8 @@ const getExpense =async (req,res)=>{
             res.sendStatus(403);
         }
         else{
-            const expenseData =await expenseModal.find({user:req.body.userId});
+            const expenseData =await expenseModal.find({user:req.body.userId.userId});
+            console.log(req.body.userId);
             res.json({
                 authData,
                 expenseData

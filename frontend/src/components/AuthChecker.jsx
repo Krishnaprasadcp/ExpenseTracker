@@ -5,7 +5,6 @@ const ProtectedRoute=({element:Element})=>{
    
     const cookieValue = Cookies.get('jwt');
     const token = useSelector((state)=>state.userLoginData.token);
-    console.log(cookieValue);
     const isAuthenticated=()=>{
         if(token === cookieValue){
             return true

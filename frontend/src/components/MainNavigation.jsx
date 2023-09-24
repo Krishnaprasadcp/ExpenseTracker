@@ -12,7 +12,7 @@ function MainNavigation(){
   }
     return(
         <Fragment>
-            <nav className="text-xl lg:text-2xl">
+            <nav className="text-xl lg:text-2xl border border-b-full border-gray-300 mb-2">
             <ul className="flex flex-row justify-between mx-2 ">
               <li>
               <NavLink to="/user/homepage" className={({isActive})=>isActive ? "active": undefined} end>Home</NavLink>

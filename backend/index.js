@@ -27,7 +27,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/expenseTracker",{
     //login a user
     app.post('/user/login',postLoginUser)
     //get the user expense
-    app.post('/user/Expense/',verifyToken,getExpense);
+    app.post('/user/expense/',verifyToken,getExpense);
     //add the user Expense
     app.post('/user/addExpense/',postExpense);
     //delete an expense

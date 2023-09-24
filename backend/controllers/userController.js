@@ -35,10 +35,29 @@ const postRegisterUser = async (req, res) => {
       sex: userData.sex,
       ageUser: dob,
     });
+    const maxAge = 3 * 60 * 60 * 24;
+
     const savedUser = await userInformation.save();
+    const userInfo={
+      firstName:userData.firstName,
+      lastName:userData.lastName
+    };
     const token = generateToken(savedUser._id);
-    res.cookie("jwt",token,{maxAge:maxAge*1000});
-    res.status(201).json({ message: "Created successfully" ,token:token});
+    try {
+      res.cookie("jwt", token, {
+        maxAge: maxAge * 1000
+      });
+      console.log("Cookie set successfully");
+      res.status(201).json({ message: "Created successfully", token: token, userInfo: userInfo });
+    } catch (error) {
+      console.error("Error setting cookie:", error);
+      // Handle the error appropriately
+      res.status(500).json({ error: "Internal server error" });
+    }
+
+    // res.cookie("jwt",token,{maxAge:maxAge*1000});
+    // console.log("created cookie");
+    // res.status(201).json({ message: "Created successfully" ,token:token,userInfo:userInfo});
 
   }
   if (userData && monthlyExpenseData.length > 0) {
@@ -70,8 +89,10 @@ const postRegisterUser = async (req, res) => {
       monthlyExpense: monthlyExpenses,
     });
      await expenseMonthlyData.save();
+     const maxAge = 3 * 60 * 60 * 24;
 
     const token = generateToken(savedUser._id);
+    
     res.cookie("jwt",token,{maxAge:maxAge*1000});
     const userInfo={
       firstName:userData.firstName,
@@ -85,15 +106,18 @@ const postRegisterUser = async (req, res) => {
 
 //login a user
 const postLoginUser = async (req, res) => {
+  const maxAge = 3 * 60 * 60 * 24;
+
   const { email, password } = req.body;
   const user = await userModal.findOne({ email });
   if (user && (await bcrypt.compare(password, user.password))) {
     const token = generateToken(user._id);
 
-    res.cookie("jwt", token, { maxAge: maxAge * 1000 });
+    res.cookie("jwt", token);
     const userData = {
       firstName: user.firstName,
       lastName: user.lastName,
+      userId:user._id
     };
     res.status(200).json({
       user: userData,
@@ -103,10 +127,9 @@ const postLoginUser = async (req, res) => {
     res.status(401).json({ message: "Not found" });
   }
 };
-const maxAge = 3 * 60 * 60 * 24;
 
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.SECRET_KEY, { expiresIn: maxAge });
+  return jwt.sign({ id }, process.env.SECRET_KEY, { expiresIn: "1d" });
 };
 
 module.exports = {
